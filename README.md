@@ -1,1 +1,2 @@
 # Team_107_Smary_Gloves
+# The purpose of our project is to create a wearable technology (Smart Gloves) to help people that are more susceptible to COVID-19 or even any other illness, to have a more convenient life and allow users to maintain their health and safety in the midst of the COVID-19 pandemic. This will be achieved by allowing users to open doors without direct contact as well as inform other people around them that they are too close. 
