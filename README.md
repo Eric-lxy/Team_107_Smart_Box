@@ -1,3 +1,3 @@
-# Team_107_Smary_Box
+# Team_107_Smart_Box
 # The purpose of our project is to create a wearable device that can provide a means for those who struggle with communicating. It would allow nonverbal people, such as those that live with autism, to visually show others how they are feeling to prevent situations that could distress them. It could also be used to inform the users about their environment, if the users are not paying attention or if they are hard of hearing. This will be done by displaying different colors from an RGB LED strip to indicate the users' feelings or situations to those around them. Using a proximity IR sensor will inform the users of changes in their environment that they may not be aware of. To control the system a force-sensitive button will allow the users to choose different actions.
 
