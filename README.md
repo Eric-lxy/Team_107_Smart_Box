@@ -3,6 +3,8 @@
 
 In order to use the codes, you need to use the 20 pins microcontroller with the part number PIC18F16Q40: https://www.microchip.com/en-us/product/PIC18F16Q40
 
+You need to have a serial LED strip, a pressure sensor, a IR sensor and a 30 pins ESP32.
+
 In order to program successfully, you need to: 
 1. buy a MPLAB®SNAP: https://www.microchip.com/en-us/development-tool/PG164100
 2. download MPLAB® X IDE v6.0 version: https://www.microchip.com/en-us/tools-resources/develop/mplab-x-ide,
