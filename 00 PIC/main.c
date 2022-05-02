@@ -4,60 +4,25 @@
 #include "SPI_Driver.h"
 #include <string.h>
 
-//float currentRange = 5;
-
-char msg[100];
-char fmsg[100]="\0";
-char colour;
-uint8_t Voltage;
-uint16_t newVolt;// for pressure sensor
 //*********************************************************
 uint8_t rxData; // esp32 read
-float rxDataf = 0; // esp32 convert to float
-float boundingCondition;
-float rxDatafLower;
-float rxDatafUpper;
-
-int rx_f = 1; // recieve flag
-int tx_f = 1; // transmit flag
 //**********************************************************
 
 
 int IR = 1300;
 
+//UART interupt for recieving colour data from MQTT server
 void ISR_3(void)
-{/*
-        uint8_t rxByte;
-        //uint8_t data; // change with the teammates' data
-        UART3_Receive_ISR();
-            // Logic to echo received data
-            if(UART3_is_rx_ready())
-            {
-                //data = currentRange;
-                rxByte = UART3_Read();
-                //msg[0]=rxByte;
-                if (rxByte == '\0'){
-                    //LED_Toggle();
-//                    __delay_ms(500);
-                }
-                strncat(msg,&rxByte,1);
-
-                
-                UART3_Write(rxByte); // change teammates' data
-            }
-        //LED_Toggle();
-   */
-    
+{   
     UART3_Receive_ISR();
     
-    while(!UART3_is_rx_ready);
+    while(!UART3_is_rx_ready());
         rxData = UART3_Read();
 
 }
-
+//Function for sending IR sensor range data to MQTT server
 void tx(float dist) 
 {
-    if(tx_f == 1) {
     while(!UART3_is_tx_ready());
     
     printf("%f6.2",dist);
@@ -65,20 +30,18 @@ void tx(float dist)
     printf("\r\n");
     
     while(!UART3_is_tx_done());
-    }
+    
 }
 
 void main(void)
 {
     uint16_t currentRange = 0;
-    //float btnForce = 0;
     int counter = 0;
     
     // Initialize the device
     SYSTEM_Initialize();
     UART3_Initialize();
     UART3_SetRxInterruptHandler(ISR_3);
-    //SPI2_Initialize();
     
     ADCC_Initialize();
     ADCC_DisableContinuousConversion();
@@ -95,13 +58,10 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
   
+    
+    //initializing board LED and LED strip 
     LED_SetHigh();
-    //clear(); // Clearing string    
-    
-    
-//    if(counter == 3) // 3 is the number of colours used (number of cases)
-//        counter = 0;
-//    
+
     for(int i = 0; i < numLEDs; i++)
     {
         switch(i)
@@ -124,19 +84,13 @@ void main(void)
     }
         
     while (1)
-    {
-        if(0==strcmp(msg,"abc\0"))// it can work with only one character, but cannot work with a string. How to fix that?
-        {
-            LED_Toggle();
-            __delay_ms(100);
-        }
-        
-        readADC();
+    {      
+        readADC(); //reading FSR and setting LED Strip
         __delay_ms(50);
         
-        currentRange = ADCC_GetSingleConversion(IR_OUT); //1250-1268
+        currentRange = ADCC_GetSingleConversion(IR_OUT); //reading IR sensor value
         
-        if(currentRange > IR)
+        if(currentRange > IR) //if object is within range turning on board LED
         {
             for(int i = 0; i < numLEDs; i++)
                 LED_SetHigh();
@@ -144,11 +98,12 @@ void main(void)
         else
             LED_SetLow();
         
-        tx(currentRange);
+        tx(currentRange); //Sending IR sensor value to MQTT server
         
         //MQQT value set lights
-        
-        switch(rxData)
+        //When a colour name is selected and published to the MQTT server
+        //ESP32 retrieves the colour value and the LED Strip colour is set accordingly
+        switch(rxData) 
         {
             case 114:
                 for(int i = 0; i < numLEDs; i++)
@@ -175,7 +130,7 @@ void main(void)
                     clear();     
                 break;
         }  
-        rxData = 0;
+        rxData = 0; //re-setting rxData for new value
         
     }
 }
