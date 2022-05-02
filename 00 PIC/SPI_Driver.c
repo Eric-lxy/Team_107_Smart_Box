@@ -3,13 +3,11 @@
  
 int counter = 0;
 
+//SPI driver for MCP3002 ADC
 void readADC()
 {
     k = 0;
-    
-    //startBits();
-    //TMR0_StartTimer();
-    
+        
     CS = 0;
     CLK = 0;
     OUT = 1;
@@ -17,7 +15,6 @@ void readADC()
     __delay_us(1);
     
     CLK = 1;
-    //delay;
     
     __delay_us(1);
     
@@ -33,7 +30,6 @@ void readADC()
     __delay_us(1);
     
     CLK = 1;
-    //delay;
     __delay_us(1);
     
     CLK = 0;
@@ -43,47 +39,20 @@ void readADC()
     
     CLK = 1;
     
-    //timer();
-    
-    //delay;
     __delay_us(1);
     
     CLK = 0;
-    //delay;
     __delay_us(1);
     
     CLK = 1;
     
-    //readData();
-    
-    //timer();
-    
-    //delay;
     __delay_us(1);
     
     CLK = 0;
-    //delay;
     __delay_us(1);
     CLK = 1;
     
     
-    /*
-    for(int i = 0; i<10; i++)
-    {
-        //timer();
-        
-        //delay;
-        NOP();
-        NOP();
-        CLK = 0;
-        //delay;
-        NOP();
-        NOP();
-        CLK = 1;
-        
-        adcData[i] = INPUT_GetValue();
-    }
-    */
     __delay_us(1);
     
     CLK = 0;
@@ -164,8 +133,6 @@ void readADC()
     CLK = 1;
     adcData[9] = INPUT_GetValue();
     
-    //delay;
-    
     NOP();
     NOP();
     
@@ -174,72 +141,57 @@ void readADC()
     __delay_us(1);
     
     CLK = 1;
-    //delay;
     
     __delay_us(1);
     
     CS = 0;
     CLK = 0;
-    //delay;
     
     __delay_us(1);
     
     CLK = 1;
-    //timer();
     
-    //delay;
    __delay_us(1);
     
     CLK = 0;
-    //delay;
     __delay_us(1);
     
     CLK = 1;
     
-    //delay;
     __delay_us(1);
     
     CLK = 0;
     OUT = 0;
-    //delay;
     __delay_us(1);
     
     CLK = 1;
-    //timer();
     
-    //delay;
     __delay_us(1);
     
     CLK = 0;
-    //delay;
     __delay_us(1);
     
     CLK = 1;
-    
-    
-    
+        
     CS = 1;
     
     
-//    for (int i = 0; i < 10; i++)
-//            k = 10 * k + adcData[i];
-        
+    //Converting binary value to integer
     uint16_t data = adcData[0];
-    
+        
     for(int i = 1; i < 10; i++)
     {
         data = data << 1;
         data = data | adcData[i];
     }
     
-//    __delay_ms(500);
-        
     
-    if (data < 900 && data > 250) //Voltage Less than 3 (Estimated 200g Force or Less)0000000000
+    //cycling through colours on medium pressure presses
+    if (data < 900 && data > 250)
     {
         counter++;
         
-        if(counter == 4) // 3 is the number of colours used (number of cases)
+        if(counter == 4) 
             counter = 0;
             
         
@@ -263,8 +215,8 @@ void readADC()
                 break;
             }
     }
-    
-    if (data > 975) //Voltage Greater than 3 (Estimated 200g Force or More)
+    //Clearing LED strip on a hard press
+    if (data > 975) 
     {
         for(int i = 0; i < numLEDs; i++)
             clear();
@@ -272,5 +224,4 @@ void readADC()
         
     __delay_ms(500);
     
-    //TMR0_StopTimer();
 }
